@@ -9,7 +9,7 @@ const PORT = Number(env('PORT', '3000'));
 
 dotenv.config();
 
-export const setupServer = () => {
+const setupServer = () => {
   const app = express();
   app.use(express.json());
   app.use(
@@ -49,9 +49,9 @@ export const setupServer = () => {
     });
   });
 
-  app.use;
-  '*',
-    (req, res) => {
-      res.status(404).json({ message: 'Not found' });
-    };
+  app.use('*', (req, res) => {
+    res.status(404).json({ message: 'Not found' });
+  });
 };
+
+export default setupServer;
