@@ -25,8 +25,8 @@ const setupServer = () => {
     console.log(`Server is running on port ${PORT}`);
   });
 
-  app.get('/contacts', (req, res) => {
-    const contacts = getAllContacts();
+  app.get('/contacts', async (req, res) => {
+    const contacts = await getAllContacts();
     res.status(200).json({
       status: 200,
       message: 'Successfully found contacts!',
@@ -34,9 +34,9 @@ const setupServer = () => {
     });
   });
 
-  app.get('/contacts/:contactId', (req, res) => {
+  app.get('/contacts/:contactId', async (req, res) => {
     const { contactId } = req.params;
-    const contact = getContactById(contactId);
+    const contact = await getContactById(contactId);
 
     if (!contact) {
       res.status(404).json({ message: 'Contact not found' });
