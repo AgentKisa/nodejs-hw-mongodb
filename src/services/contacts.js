@@ -10,4 +10,20 @@ const getContactById = async (contactId) => {
   return contact;
 };
 
-export { getAllContacts, getContactById };
+const createContact = async (contact) => {
+  const newContact = await ContactsCollection.create(contact);
+  return newContact;
+};
+
+const updateContact = async (contactId, payload) => {
+  const rawResult = await ContactsCollection.findOneAndUpdate(
+    { _id: contactId },
+    payload,
+  );
+
+  if (!rawResult || !rawResult.value) return null;
+
+  return rawResult.value;
+};
+
+export { getAllContacts, getContactById, createContact, updateContact };
