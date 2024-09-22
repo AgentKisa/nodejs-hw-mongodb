@@ -1,4 +1,6 @@
 import {
+  createContact,
+  deleteContact,
   getAllContacts,
   getContactById,
   updateContact,
@@ -49,9 +51,19 @@ const updateContactController = async (req, res) => {
   });
 };
 
+const deleteContactController = async (req, res) => {
+  const { contactId } = req.params;
+  const deletedContact = await deleteContact(contactId);
+  if (!deletedContact) {
+    throw createHttpError(404, 'Contact not found');
+  }
+  res.status(204).send();
+};
+
 export {
   getAllContactsController,
   getContactByIdController,
   createContactController,
   updateContactController,
+  deleteContactController,
 };

@@ -15,15 +15,36 @@ const createContact = async (contact) => {
   return newContact;
 };
 
-const updateContact = async (contactId, payload) => {
-  const rawResult = await ContactsCollection.findOneAndUpdate(
+const updateContact = async (contactId, payload, options = {}) => {
+  const updatedContact = await ContactsCollection.findOneAndUpdate(
     { _id: contactId },
     payload,
+    options,
   );
 
-  if (!rawResult || !rawResult.value) return null;
-
-  return rawResult.value;
+  if (!updatedContact) return null;
+  return updatedContact;
 };
 
-export { getAllContacts, getContactById, createContact, updateContact };
+// const rawResult = await ContactsCollection.findOneAndUpdate(
+//   { _id: contactId },
+//   payload,
+//   options,
+// );
+
+// if (!rawResult || !rawResult.value) return null;
+
+// return rawResult.value;
+
+const deleteContact = async (contactId) => {
+  const result = await ContactsCollection.findOneAndDelete({ _id: contactId });
+  return result;
+};
+
+export {
+  getAllContacts,
+  getContactById,
+  createContact,
+  updateContact,
+  deleteContact,
+};
