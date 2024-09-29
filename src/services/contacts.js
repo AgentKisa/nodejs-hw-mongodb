@@ -1,10 +1,37 @@
 import { ContactsCollection } from '../db/models/contacts.js';
+import { calculatePaginationData } from '../utils/calculatePaginationData.js';
+import { SORT_ORDER } from '../utils/parseSortParams.js';
 
-const getAllContacts = async () => {
-  const contacts = await ContactsCollection.find();
-  return contacts;
+const getAllContacts = async ({
+  page = 1,
+  perPage = 10,
+  sortBy = 'name',
+  sortOrder = SORT_ORDER.ASC,
+}) => {
+  const limit = perPage;
+  const skip = (page - 1) * perPage;
+
+  console.log('getAllContacts: page and perPage parsed', page, perPage);
+  const contactsQuery = ContactsCollection.find();
+  const contactsCount = await ContactsCollection.find()
+    .merge(contactsQuery)
+    .countDocuments();
+
+  const contacts = await contactsQuery
+    .skip(skip)
+    .limit(limit)
+    .sort({ [sortBy]: sortOrder })
+    .exec();
+  console.log('getAllContacts: contacts found', contacts);
+
+  const paginationData = calculatePaginationData(contactsCount, page, perPage);
+  console.log('getAllContacts: pagination data', paginationData);
+
+  return {
+    data: contacts,
+    ...paginationData,
+  };
 };
-
 const getContactById = async (contactId) => {
   const contact = await ContactsCollection.findById(contactId);
   return contact;
@@ -23,16 +50,6 @@ const updateContact = async (contactId, payload) => {
   );
   return updatedContact;
 };
-
-// const rawResult = await ContactsCollection.findOneAndUpdate(
-//   { _id: contactId },
-//   payload,
-//   options,
-// );
-
-// if (!rawResult || !rawResult.value) return null;
-
-// return rawResult.value;
 
 const deleteContact = async (contactId) => {
   const result = await ContactsCollection.findOneAndDelete({ _id: contactId });
