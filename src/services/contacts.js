@@ -8,12 +8,12 @@ const getAllContacts = async ({
   sortBy = 'name',
   sortOrder = SORT_ORDER.ASC,
   filter = {},
+  userId,
 }) => {
   const limit = perPage;
   const skip = (page - 1) * perPage;
 
-  console.log('getAllContacts: page and perPage parsed', page, perPage);
-  const contactsQuery = ContactsCollection.find();
+  const contactsQuery = ContactsCollection.find({ userId });
 
   if (filter.contactType) {
     contactsQuery.where('contactType').equals(filter.contactType);
@@ -32,37 +32,40 @@ const getAllContacts = async ({
     .limit(limit)
     .sort({ [sortBy]: sortOrder })
     .exec();
-  console.log('getAllContacts: contacts found', contacts);
 
   const paginationData = calculatePaginationData(contactsCount, page, perPage);
-  console.log('getAllContacts: pagination data', paginationData);
 
   return {
     data: contacts,
     ...paginationData,
   };
 };
-const getContactById = async (contactId) => {
-  const contact = await ContactsCollection.findById(contactId);
+const getContactById = async (contactId, userId) => {
+  const contact = await ContactsCollection.findOne({
+    _id: contactId,
+    userId,
+  });
   return contact;
 };
 
-const createContact = async (contact) => {
-  const newContact = await ContactsCollection.create(contact);
+const createContact = async (userId, contact) => {
+  const newContact = await ContactsCollection.create({ ...contact, userId });
   return newContact;
 };
-
-const updateContact = async (contactId, payload) => {
+const updateContact = async (contactId, userId, payload) => {
   const updatedContact = await ContactsCollection.findOneAndUpdate(
-    { _id: contactId },
-    payload,
+    { _id: contactId, userId },
+    { ...payload, userId },
     { new: true },
   );
   return updatedContact;
 };
 
-const deleteContact = async (contactId) => {
-  const result = await ContactsCollection.findOneAndDelete({ _id: contactId });
+const deleteContact = async (contactId, userId) => {
+  const result = await ContactsCollection.findOneAndDelete({
+    _id: contactId,
+    userId,
+  });
   return result;
 };
 
