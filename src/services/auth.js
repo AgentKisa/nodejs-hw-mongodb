@@ -7,6 +7,10 @@ import {
 } from '../constants/index.js';
 import { SessionsCollection } from '../db/models/session.js';
 import crypto from 'node:crypto';
+import { SMTP } from '../constants/index.js';
+import { env } from '../utils/env.js';
+import { sendMail } from '../utils/sendMail.js';
+import jwt from 'jsonwebtoken';
 
 export const registerUser = async (payload) => {
   const user = await UsersCollection.findOne({ email: payload.email });
@@ -88,4 +92,57 @@ export const refreshUsersSession = async ({ sessionId, refreshToken }) => {
     userId: session.userId,
     ...newSession,
   });
+};
+
+export const requestResetToken = async (email) => {
+  const user = await UsersCollection.findOne({ email });
+  if (!user) {
+    throw createHttpError(404, 'User not found');
+  }
+  const resetToken = jwt.sign(
+    {
+      sub: user._id,
+      email,
+    },
+    env(SMTP.JWT_SECRET),
+    {
+      expiresIn: 60 * 15, //15 minutes,
+    },
+  );
+
+  const resetLink = `${env(
+    SMTP.APP_DOMAIN,
+  )}/reset-password?token=${resetToken}`;
+  try {
+    await sendMail({
+      to: email,
+      from: env(SMTP.SMTP_FROM),
+      html: `<p>Click <a href="${resetLink}">here</a> to reset your password!</p>`,
+      subject: 'Reset your password!',
+    });
+  } catch (err) {
+    console.log(err);
+    throw createHttpError(
+      500,
+      'Failed to send the email, please try again later.',
+    );
+  }
+};
+
+export const resetPassword = async ({ token, password }) => {
+  let payload;
+  try {
+    payload = jwt.verify(token, env(SMTP.JWT_SECRET));
+  } catch (err) {
+    throw createHttpError(401, 'Token is expired or invalid.');
+  }
+  const user = await UsersCollection.findById(payload.sub);
+  if (!user) {
+    throw createHttpError(404, 'User not found!');
+  }
+  const hashedPassword = await bcrypt.hash(password, 10);
+  await UsersCollection.findByIdAndUpdate(user._id, {
+    password: hashedPassword,
+  });
+  await SessionsCollection.deleteOne({ userId: user._id });
 };
