@@ -2,6 +2,7 @@ import { ContactsCollection } from '../db/models/contacts.js';
 import { calculatePaginationData } from '../utils/calculatePaginationData.js';
 import { SORT_ORDER } from '../utils/parseSortParams.js';
 import { saveFileToCloudinary } from '../utils/saveFileToCloudinary.js';
+import { saveImage } from '../utils/saveImage.js';
 
 const getAllContacts = async ({
   page = 1,
@@ -50,30 +51,29 @@ const getContactById = async (contactId, userId) => {
 };
 
 const createContact = async (userId, contact, file) => {
-  let avatarUrl = null;
+  let photo = null;
   if (file) {
-    avatarUrl = await saveFileToCloudinary(file);
+    photo = await saveImage(file);
   }
   const newContact = await ContactsCollection.create({
     ...contact,
     userId,
-    avatarUrl,
+    photo,
   });
   return newContact;
 };
-const updateContact = async (contactId, userId, { file, ...payload }) => {
-  let avatarUrl = null;
+const updateContact = async (contactId, userId, payload, file) => {
+  let photo = null;
   if (file) {
-    avatarUrl = await saveFileToCloudinary(file);
+    photo = await saveImage(file);
   }
   const updatedContact = await ContactsCollection.findOneAndUpdate(
     { _id: contactId, userId },
-    { ...payload, userId, avatarUrl },
+    { ...payload, userId, photo },
     { new: true },
   );
   return updatedContact;
 };
-
 const deleteContact = async (contactId, userId) => {
   const result = await ContactsCollection.findOneAndDelete({
     _id: contactId,
