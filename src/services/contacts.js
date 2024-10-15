@@ -63,7 +63,7 @@ const createContact = async (userId, contact, file) => {
   return newContact;
 };
 const updateContact = async (contactId, userId, payload, file) => {
-  let photo = null;
+  let photo = payload.photo;
   if (file) {
     photo = await saveImage(file);
   }

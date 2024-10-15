@@ -32,9 +32,9 @@ const setupServer = () => {
     console.log(`Server is running on port ${PORT}`);
   });
 
-  app.use(contactsRoute);
-
   app.use(authRouter);
+
+  app.use(contactsRoute);
 
   app.use('/files', express.static(path.join(UPLOAD_PATH, 'images')));
 

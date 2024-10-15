@@ -30,7 +30,7 @@ router.get(
 router.post(
   '/contacts',
   authenticate,
-  upload.single('file'),
+  upload.single('photo'),
   validateBody(createContactSchema),
   ctrlWrapper(createContactController),
 );
@@ -39,7 +39,7 @@ router.patch(
   '/contacts/:contactId',
   authenticate,
   isValidId,
-  upload.single('file'),
+  upload.single('photo'),
   validateBody(updateContactSchema),
   ctrlWrapper(updateContactController),
 );
