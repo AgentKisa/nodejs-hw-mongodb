@@ -184,7 +184,7 @@
                 "required": [
                   "name",
                   "phoneNumber",
-                  "userId"
+                  "contactType"
                 ],
                 "properties": {
                   "name": {
@@ -355,11 +355,6 @@
             "multipart/form-data": {
               "schema": {
                 "type": "object",
-                "required": [
-                  "name",
-                  "phoneNumber",
-                  "userId"
-                ],
                 "properties": {
                   "name": {
                     "description": "Contact's name",
