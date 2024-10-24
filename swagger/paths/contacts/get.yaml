@@ -29,11 +29,18 @@ parameters:
       enum: ['asc', 'desc']
       example: 'asc'
   - in: query
-    name: filter
+    name: contactType
     schema:
       type: string
-      enum: ['male', 'female', 'other']
-      example: male
+      enum: ['personal', 'work', 'home']
+      example: 'home'
+      description: "Filter contacts by type: 'personal', 'work', or 'home'"
+  - in: query
+    name: isFavourite
+    schema:
+      type: boolean
+      example: false
+      description: 'Filter to show only favorite contacts'
 responses:
   '200':
     description: Successfully found contacts!

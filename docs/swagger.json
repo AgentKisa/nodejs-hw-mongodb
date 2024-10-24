@@ -77,15 +77,25 @@
           },
           {
             "in": "query",
-            "name": "filter",
+            "name": "contactType",
             "schema": {
               "type": "string",
               "enum": [
-                "male",
-                "female",
-                "other"
+                "personal",
+                "work",
+                "home"
               ],
-              "example": "male"
+              "example": "home",
+              "description": "Filter contacts by type: 'personal', 'work', or 'home'"
+            }
+          },
+          {
+            "in": "query",
+            "name": "isFavourite",
+            "schema": {
+              "type": "boolean",
+              "example": false,
+              "description": "Filter to show only favorite contacts"
             }
           }
         ],
@@ -216,11 +226,6 @@
                       "personal"
                     ],
                     "example": "personal"
-                  },
-                  "userId": {
-                    "description": "Contact's userId",
-                    "type": "string",
-                    "example": "65e4decdd286b30065d54af9"
                   },
                   "photo": {
                     "description": "Contact's photo",
@@ -385,11 +390,6 @@
                       "personal"
                     ],
                     "example": "personal"
-                  },
-                  "userId": {
-                    "description": "Contact's userId",
-                    "type": "string",
-                    "example": "65e4decdd286b30065d54af9"
                   },
                   "photo": {
                     "description": "Contact's photo",
