@@ -33,5 +33,9 @@ responses:
             data:
               type: object
               $ref: '../../../components/schemas/contact.yaml'
+  '400':
+    $ref: ../../../components/responses/400-idNotValid.yaml
+  '401':
+    $ref: ../../../components/responses/401.yaml
   '404':
-    $ref: '../../../components/responses/401.yaml'
+    $ref: ../../../components/responses/404-contactNotFound.yaml

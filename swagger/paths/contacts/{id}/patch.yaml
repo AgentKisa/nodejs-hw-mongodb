@@ -13,6 +13,7 @@ parameters:
       type: string
       example: '65ca67e7ae7f10c88b598384'
 requestBody:
+  required: true
   content:
     multipart/form-data:
       schema:
@@ -64,5 +65,9 @@ responses:
             data:
               type: object
               $ref: '../../../components/schemas/contact.yaml'
+  '400':
+    $ref: ../../../components/responses/400-idNotValid.yaml
+  '401':
+    $ref: ../../../components/responses/401.yaml
   '404':
-    $ref: '../../../components/responses/401.yaml'
+    $ref: ../../../components/responses/404-contactNotFound.yaml

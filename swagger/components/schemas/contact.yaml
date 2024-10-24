@@ -3,8 +3,11 @@ required:
   - _id
   - name
   - phoneNumber
+  - email
+  - isFavourite
   - contactType
   - userId
+  - photo
 properties:
   _id:
     type: string

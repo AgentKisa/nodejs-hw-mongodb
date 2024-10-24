@@ -92,5 +92,21 @@ responses:
                 hasPreviousPage:
                   type: boolean
                   example: true
-  '404':
+  '400':
+    description: 'The requested page exceeds the total number of pages'
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - status
+            - message
+          properties:
+            status:
+              type: integer
+              example: 400
+            message:
+              type: string
+              example: 'The requested page exceeds the total number of pages'
+  '401':
     $ref: '../../components/responses/401.yaml'
